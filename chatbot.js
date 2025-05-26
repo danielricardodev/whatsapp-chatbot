@@ -1,26 +1,45 @@
-// leitor de qr code
-// leitor de qr code
+const { Client, LocalAuth } = require('whatsapp-web.js');
+const qrcode = require('qrcode');
+const express = require('express');
 const fs = require('fs');
-const qrcode = require('qrcode-terminal'); // ADICIONE ESTA LINHA
-const { Client, LocalAuth, Buttons, List, MessageMedia } = require('whatsapp-web.js');
+
+const app = express();
+const port = process.env.PORT || 3000;
 
 const client = new Client({
-    authStrategy: new LocalAuth({ clientId: "byesterlilian" }),
-    puppeteer: {
-        args: ['--no-sandbox', '--disable-setuid-sandbox']
+  authStrategy: new LocalAuth(),
+  puppeteer: {
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+  },
+});
+
+let qrCodeImage = '';
+
+client.on('qr', (qr) => {
+  console.log('QR RECEBIDO, gerando imagem...');
+  qrcode.toDataURL(qr, (err, url) => {
+    if (err) {
+      console.error('Erro ao gerar imagem do QR Code:', err);
+      return;
     }
+    qrCodeImage = url;
+  });
 });
 
-
-client.on('qr', qr => {
-    qrcode.generate(qr, { small: true });
+app.get('/qr', (req, res) => {
+  if (qrCodeImage) {
+    res.send(`<img src="${qrCodeImage}" style="width:300px; height:300px;">`);
+  } else {
+    res.send('QR Code não gerado ainda ou já autenticado.');
+  }
 });
 
-client.on('ready', () => {
-    console.log('Tudo certo! WhatsApp conectado.');
+app.listen(port, () => {
+  console.log(`Servidor rodando em http://localhost:${port}/qr`);
 });
 
 client.initialize();
+
 
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
