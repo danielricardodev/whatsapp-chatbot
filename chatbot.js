@@ -4,7 +4,7 @@ const express = require('express');
 const fs = require('fs');
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8080;  // <-- mantenha só esta linha
 
 const client = new Client({
   authStrategy: new LocalAuth(),
@@ -34,12 +34,12 @@ app.get('/qr', (req, res) => {
   }
 });
 
-const port = process.env.PORT || 8080;
 app.listen('0.0.0.0', port, () => {
   console.log(`Servidor rodando em http://0.0.0.0:${port}/qr`);
 });
 
 client.initialize();
+
 
 
 const delay = ms => new Promise(res => setTimeout(res, ms));
