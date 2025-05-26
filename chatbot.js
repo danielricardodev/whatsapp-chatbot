@@ -5,7 +5,10 @@ const qrcode = require('qrcode-terminal'); // ADICIONE ESTA LINHA
 const { Client, LocalAuth, Buttons, List, MessageMedia } = require('whatsapp-web.js');
 
 const client = new Client({
-    authStrategy: new LocalAuth({ clientId: "byesterlilian" }) // você pode mudar o nome se quiser
+    authStrategy: new LocalAuth({ clientId: "byesterlilian" }),
+    puppeteer: {
+        args: ['--no-sandbox', '--disable-setuid-sandbox']
+    }
 });
 
 
