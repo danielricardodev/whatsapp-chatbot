@@ -34,8 +34,9 @@ app.get('/qr', (req, res) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`Servidor rodando em http://localhost:${port}/qr`);
+const port = process.env.PORT || 8080;
+app.listen('0.0.0.0', port, () => {
+  console.log(`Servidor rodando em http://0.0.0.0:${port}/qr`);
 });
 
 client.initialize();
